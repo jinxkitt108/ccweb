@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh lpR fFf">
+  <q-layout view="hHh lpR fFf">
     <q-header elevated class="bg-primary text-white" height-hint="98">
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="left = !left" />
@@ -15,25 +15,20 @@
       </q-toolbar>
 
       <q-tabs align="center">
-        <q-route-tab to="/" label="Home"></q-route-tab>
+        <q-route-tab to="/" label="Home" exact />
+        <q-route-tab to="/portfolio" label="Portfolio" />
+        <q-route-tab to="/courses" label="Courses" />
+        <q-route-tab to="/discussions" label="Discussions" />
       </q-tabs>
     </q-header>
 
     <q-drawer v-model="left" show-if-above :breakpoint="400">
       <q-scroll-area
-        style="height: calc(100% - 150px); margin-top: 150px; border-right: 1px solid #ddd"
+        class="bg-grey-1"
+        style="height: calc(100% - 150px); margin-top: 150px;"
       >
         <q-list padding>
-          <q-item to="/overview" clickable v-ripple>
-            <q-item-section avatar>
-              <q-icon name="home" />
-            </q-item-section>
-            <q-item-section>
-              Overview
-            </q-item-section>
-          </q-item>
-
-          <q-item to="/dashboard" clickable v-ripple>
+          <q-item to="/admin/dashboard" clickable v-ripple>
             <q-item-section avatar>
               <q-icon name="dashboard" />
             </q-item-section>
@@ -42,7 +37,16 @@
             </q-item-section>
           </q-item>
 
-          <q-item to="/admin-projects" clickable v-ripple>
+          <q-item to="/admin/portfolio" clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon name="folder" />
+            </q-item-section>
+            <q-item-section>
+              Portfolio
+            </q-item-section>
+          </q-item>
+
+          <q-item to="/admin/projects" clickable v-ripple>
             <q-item-section avatar>
               <q-icon name="code" />
             </q-item-section>
@@ -71,8 +75,8 @@
           <q-avatar size="56px" class="q-mb-sm">
             <img src="~assets/app_images/admin.png" />
           </q-avatar>
-          <div class="text-weight-bold">{{ userDetails.name }}</div>
-          <div class="text-overline text-uppercase">{{ userDetails.type }}</div>
+          <div class="text-weight-bold">{{ currentUser.name }}</div>
+          <div class="text-overline text-uppercase">{{ currentUser.role }}</div>
         </div>
       </q-img>
     </q-drawer>
@@ -85,13 +89,10 @@
       <router-view />
     </q-page-container>
 
-    <q-footer elevated class="bg-grey-8 text-white">
-      <q-toolbar>
-        <q-toolbar-title>
-          <q-avatar>
-            <h3>Logo Here</h3>
-          </q-avatar>
-          Title
+    <q-footer class="bg-white">
+      <q-toolbar class="text-dark">
+        <q-toolbar-title class="text-caption">
+          @CCWeb. All rights reserved 2020.
         </q-toolbar-title>
       </q-toolbar>
     </q-footer>
@@ -100,13 +101,8 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import { preFetch } from "quasar/wrappers";
 
 export default {
-  preFetch({ store }) {
-    store.dispatch("admin/getProjects");
-  },
-
   data() {
     return {
       left: false,
@@ -115,7 +111,7 @@ export default {
   },
 
   computed: {
-    ...mapState("auth", ["userDetails"])
+    ...mapState("auth", ["currentUser"])
   },
 
   methods: {

@@ -3,7 +3,10 @@ import Vuex from 'vuex'
 
 // import example from './module-example'
 import auth from "./modules/auth";
-import admin from "./modules/admin";
+import portfolios from "./modules/portfolios";
+import projects from "./modules/projects";
+import topics from "./modules/topics";
+import createPersistedState from 'vuex-persistedstate';
 
 Vue.use(Vuex)
 
@@ -19,12 +22,13 @@ Vue.use(Vuex)
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
-      auth, admin
+      auth, portfolios, projects, topics
     },
 
     // enable strict mode (adds overhead!)
     // for dev mode only
-    strict: process.env.DEV
+    strict: process.env.DEV,
+    plugins: [createPersistedState()]
   })
 
   return Store

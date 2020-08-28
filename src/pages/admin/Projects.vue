@@ -44,20 +44,20 @@
         <template v-slot:body="props">
           <q-tr :props="props">
             <q-td key="name" :props="props">
-              {{ props.row.details.name }}
+              {{ props.row.name }}
             </q-td>
 
             <q-td key="date_started" :props="props">
-              {{ props.row.details.date_started }}
+              {{ props.row.date_started }}
             </q-td>
 
             <q-td key="status" :props="props">
               <q-btn
                 @click="project_id = props.row.id"
-                :color="status_color(props.row.details.status)"
+                :color="status_color(props.row.status)"
                 class="text-capitalize"
                 no-caps
-                :label="props.row.details.status"
+                :label="props.row.status"
                 size="md"
                 rounded
               />
@@ -80,7 +80,7 @@
 
             <q-td key="actions" :props="props">
               <q-btn
-                @click="openLink(props.row.details.status)"
+                @click="openLink(props.row.url)"
                 icon="link"
                 size="sm"
                 round
@@ -202,11 +202,11 @@ export default {
   },
 
   computed: {
-    ...mapState("admin", ["projects"])
+    ...mapState("projects", ["projects"])
   },
 
   methods: {
-    ...mapActions("admin", ["addNewProject", "updateProject", "deleteProject"]),
+    ...mapActions("projects", ["addNewProject", "updateProject", "removeProject"]),
 
     status_color(val) {
       if (val == "finished") return "green";
@@ -215,9 +215,9 @@ export default {
     },
 
     updatingStatus(data) {
-      this.new_project.fill(data.details);
+      this.new_project.fill(data);
       this.new_project.id = data.id;
-      this.project_status = data.details.status;
+      this.project_status = data.status;
     },
 
     saveStatus(status) {
@@ -241,8 +241,7 @@ export default {
 
     editingProject(project) {
       this.edit_mode = true;
-      this.new_project.fill(project.details);
-      this.new_project.id = project.id;
+      this.new_project.fill(project);
       this.newproject_dialog = true;
     },
 
@@ -261,7 +260,7 @@ export default {
           cancel: true
         })
         .onOk(() => {
-          this.deleteProject(id);
+          this.removeProject(id);
         });
     },
 

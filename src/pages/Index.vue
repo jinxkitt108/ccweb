@@ -29,9 +29,12 @@
   margin: 0px !important;
   padding: 0px !important;
 }
+.bg-index {
+  background-color: rgba(55, 6, 85, 1);
+}
 </style>
 <template>
-  <q-page class="text-white">
+  <q-page class="text-white bg-index">
     <!-- Header Section -->
     <div class="row q-pa-lg hero-panel">
       <div class="col-12 col-md-6 self-center text-center">
@@ -104,38 +107,41 @@
 
     <!-- Project Section -->
     <div class="row q-px-md bg-deep-grey-11" style="margin-top: 100px">
-      <div class="col-12 col-md-8">
+      <div class="col-sm-12 col-md-8">
         <div class="text-h5 text-center">PROJECTS</div>
         <div class="row flex flex-center q-pa-lg">
           <q-card
             v-for="project in projects"
             :key="project.id"
-            class="my-card cols col-md-3 bg-transparent"
+            class="my-card col-sm-12 col-md-3 bg-transparent"
             dark
             flat
           >
             <q-card-section>
               <div class="text-subtitle1">
-                <q-icon name="shop" size="lg" color="deep-purple-14" />
-                {{ project.details.name }}
+                <q-icon name="shop" size="lg" color="deep-purple-2" />
+                {{ project.name }}
               </div>
-              <p class="text-caption">
+              <div class="text-caption">
                 Date Started:
-                <span class="q-ml-sm">{{ project.details.date_started }}</span>
-              </p>
+                <span class="q-ml-sm">{{ project.date_started }}</span>
+              </div>
+              <div class="text-caption q-mb-sm">
+                Status:
+                <q-chip icon="construction" color="blue" text-color="white" dense>{{project.status}}</q-chip>
+              </div>
               <q-btn
-                @click="openLink(project.details.url)"
-                color="blue"
-                outline
-                rounded
+                @click="openLink(project.url)"
+                text-color="white"
+                flat
                 no-caps
-                >View Project Link</q-btn
+                >View Website</q-btn
               >
             </q-card-section>
           </q-card>
         </div>
       </div>
-      <div class="col-12 col-md-4 q-pt-lg">
+      <div class="col-sm-12 col-md-4 q-pt-lg">
         <q-img
           src="~assets/app_images/svg/shared_goals.svg"
           style="max-width: 300px"
@@ -151,8 +157,9 @@
           <q-intersection once transition="scale">
             <q-card-section class="text-center">
               <q-avatar
-                size="100px"
+                size="80px"
                 icon="science"
+                color="white"
                 text-color="green"
                 class="shadow-3  q-mb-md"
               />
@@ -176,8 +183,9 @@
           <q-intersection once transition="scale">
             <q-card-section class="text-center">
               <q-avatar
-                size="100px"
+                size="80px"
                 icon="developer_mode"
+                color="white"
                 text-color="blue"
                 class="shadow-3  q-mb-md"
               />
@@ -200,8 +208,9 @@
           <q-intersection once transition="scale">
             <q-card-section class="text-center">
               <q-avatar
-                size="100px"
+                size="80px"
                 icon="storage"
+                color="white"
                 text-color="red"
                 class="shadow-3  q-mb-md"
               />
@@ -355,12 +364,10 @@ export default {
   },
 
   computed: {
-    ...mapState("admin", ["projects"])
+    ...mapState("projects", ["projects"])
   },
 
   methods: {
-    ...mapActions("admin", ["getProjects"]),
-
     copyContent(content) {
       copyToClipboard(content)
         .then(() => {
@@ -378,10 +385,6 @@ export default {
     openLink(url) {
       openURL(url);
     }
-  },
-
-  created() {
-    this.getProjects();
   }
 };
 </script>

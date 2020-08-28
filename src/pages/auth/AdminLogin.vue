@@ -67,10 +67,6 @@ export default {
       this.registerUser(this.formData);
     }
   }
-
-  /*   created() {
-    this.register();
-  } */
 };
 </script>
 

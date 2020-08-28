@@ -1,42 +1,18 @@
-import { firebaseAuth, firebaseDb } from "boot/firebase";
+import { auth, db } from "boot/firebase";
 
 const state = {
-  userDetails: {},
+  currentUser: {},
   error: {}
 };
 
 const getters = {};
 
 const actions = {
-  /*  registerUser({}, payload) {
-    firebaseAuth
-      .createUserWithEmailAndPassword(payload.email, payload.password)
-      .then(response => {
-        let userId = firebaseAuth.currentUser.uid;
-        firebaseDb.ref("users/" + userId).set({
-          email: payload.email,
-          password: payload.password,
-          type: "admin"
-        });
-      })
-      .catch(error => {
-        console.log(error.message);
-      });
-  }, */
-
-  loginAsGuest({ state }) {
-    if (!state.userDetails.length) {
-      firebaseAuth.signInAnonymously().catch(error => {
-        console.log(error);
-      });
-    }
-  },
-
-  loginUser({ commit }, payload) {
-    firebaseAuth
+  async loginUser({ commit }, payload) {
+    auth
       .signInWithEmailAndPassword(payload.email, payload.password)
       .then(() => {
-        this.$router.push("/overview");
+        this.$router.push("/admin");
       })
       .catch(error => {
         commit("setLoginError", error);
@@ -44,33 +20,34 @@ const actions = {
   },
 
   logoutUser() {
-    firebaseAuth.signOut();
-    this.$router.replace("/adminlogin");
+    auth.signOut();
+    this.$router.replace("/");
   },
 
   handleAuthStateChanged({ commit }) {
-    firebaseAuth.onAuthStateChanged(user => {
+    auth.onAuthStateChanged(user => {
       if (user) {
-        if (!user.isAnonymous) {
-          let userId = firebaseAuth.currentUser.uid;
-          firebaseDb.ref("users/" + userId).once("value", snapshot => {
-            let userDetails = snapshot.val();
-            commit("setUserDetails", {
-              id: userId,
-              name: userDetails.name,
-              email: userDetails.email,
-              type: userDetails.type
-            });
+        let userId = auth.currentUser.uid;
+        // Firestore get current user
+        let ref = db.collection("users").doc(userId);
+        ref.get().then(details => {
+          let userDetails = details.data();
+          commit("setCurrentUser", {
+            id: userId,
+            name: userDetails.name,
+            email: userDetails.email,
+            role: userDetails.role
           });
-        }
+        });
       } else {
-        commit("setUserDetails", {});
+        commit("setCurrentUser", {});
       }
     });
   }
 };
 
 const mutations = {
+  setCurrentUser: (state, payload) => (state.currentUser = payload),
   setUserDetails: (state, payload) => (state.userDetails = payload),
   setLoginError: (state, payload) => (state.error = payload)
 };

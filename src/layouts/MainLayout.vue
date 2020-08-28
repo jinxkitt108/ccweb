@@ -1,28 +1,84 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header reveal class="q-pa-sm bg-primary">
-      <q-toolbar class="q-px-lg">
+    <q-header reveal class="bg-primary">
+      <q-toolbar>
         <q-toolbar-title>
           <q-avatar square>
             <img src="~assets/app_images/logo.png" />
           </q-avatar>
           CCWeb
         </q-toolbar-title>
+        <q-tabs class="desktop-only q-px-lg">
+          <q-route-tab
+            v-for="link in links"
+            :key="link.path"
+            :to="link.path"
+            :label="link.name"
+            exact
+          />
+        </q-tabs>
         <q-btn
-          to="/"
-          label="Home"
+          v-if="currentUser.role == 'admin'"
+          to="/admin/dashboard"
+          label="Admin"
           flat
         />
         <q-btn
-          v-if="userDetails.type == 'admin'"
-          to="/admin"
-          label="Admin"
+          v-if="Object.keys(currentUser).length"
+          @click="logoutUser"
+          color="warning"
+          label="Log Out"
           flat
+        />
+        <q-btn
+          @click="drawer = !drawer"
+          class="mobile-only"
+          flat
+          round
+          dense
+          icon="more_vert"
         />
       </q-toolbar>
     </q-header>
 
-    <q-page-container style="background: #370655">
+    <q-drawer class="mobile-only" v-model="drawer" :breakpoint="500">
+      <q-scroll-area class="fit">
+        <q-list>
+          <template v-for="(link, index) in links">
+            <q-item
+              :key="index"
+              :to="link.path"
+              class="text-center"
+              clickable
+              v-ripple
+            >
+              <q-item-section class="text-bold">
+                {{ link.name }}
+              </q-item-section>
+            </q-item>
+          </template>
+          <q-item
+            v-if="currentUser.role == 'admin'"
+            to="/admin/dashboard"
+            class="text-center"
+            clickable
+            v-ripple
+          >
+            <q-item-section class="text-bold">
+              Admin
+            </q-item-section>
+          </q-item>
+          <q-separator />
+          <q-item v-if="Object.keys(currentUser).length" class="text-center" clickable v-ripple>
+            <q-item-section class="text-bold">
+              Log Out
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-scroll-area>
+    </q-drawer>
+
+    <q-page-container>
       <router-view />
       <!-- place QPageScroller at end of page -->
       <q-page-scroller
@@ -49,9 +105,31 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import { preFetch } from "quasar/wrappers";
 export default {
+  preFetch({ store }) {
+    store.dispatch("portfolios/getPortfolios");
+    store.dispatch("projects/getProjects");
+  },
+
+  data() {
+    return {
+      drawer: null,
+      links: [
+        { name: "Home", path: "/" },
+        { name: "Portfolio", path: "/portfolio" },
+        { name: "Courses", path: "/courses" },
+        { name: "Discussions", path: "/discussions" }
+      ]
+    };
+  },
+
   computed: {
-    ...mapState("auth", ["userDetails"])
+    ...mapState("auth", ["currentUser"])
+  },
+
+  methods: {
+    ...mapActions("auth", ["logoutUser"])
   }
 };
 </script>
