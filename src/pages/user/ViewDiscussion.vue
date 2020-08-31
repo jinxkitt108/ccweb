@@ -26,7 +26,7 @@
                 formatDate(topic_details.created_at)
               }}</span></q-item-label
             >
-            <q-item-label v-if="currentUser.id == topic_details.author_id">
+            <q-item-label v-if="currentUser && currentUser.id == topic_details.author_id">
               <q-btn @click="deleteTopic(topic_details.id)" label="Delete" text-color="red-5" no-caps flat />
               <q-btn @click="openEditDialog" label="Edit" no-caps flat />
             </q-item-label>

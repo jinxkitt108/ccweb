@@ -4,12 +4,28 @@ import { Loading } from "quasar";
 
 const state = {
   topics: [],
+  your_topics: [],
   topic_details: null
 };
 
 const getters = {};
 
 const actions = {
+  async getYourTopics ({ commit }) {
+    try {
+      const topics = [];
+      const userId = auth.currentUser.uid
+      let topicRef = db.collection('topics').where('author_id', '==', userId)
+      const res = await topicRef.get()
+      res.forEach(doc => {
+        let topic = doc.data()
+        topics.push({...topic, id: doc.id})
+      })
+      commit('setYourTopics', topics)
+    } catch (e) {
+      console.log(e)
+    }
+  },
   // Adding Topic
   async addNewTopic({ commit }, payload) {
     Loading.show();
@@ -190,12 +206,14 @@ const actions = {
   async removeComment({}, payload) {
     let topicRef = db.collection("topics").doc(payload.topic_id);
     let commentRef = topicRef.collection("comments").doc(payload.id);
-    const deleting = await commentRef.delete();
+    const res = await commentRef.delete();
     //Decrement comments count
-    const decrement = topicRef.update(
-      "comments_count",
-      fieldValue.increment(-1)
-    );
+    if (res) {
+      const decrement = topicRef.update(
+        "comments_count",
+        fieldValue.increment(-1)
+      );
+    }
     Notify.create({
       message: "Comment deleted!",
       position: "top",
@@ -208,6 +226,7 @@ const actions = {
 const mutations = {
   clearTopics: (state, payload) => (state.topics = payload),
   setNewDocAdded: (state, payload) => state.topics.unshift(payload),
+  setYourTopics: (state, payload) => (state.your_topics = payload),
   setTopics: (state, payload) => state.topics.push(payload),
   setUpdatedDoc: (state, payload) => {
     state.topic_details.title = payload.title;

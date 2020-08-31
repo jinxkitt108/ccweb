@@ -11,8 +11,8 @@ exports.newUserSignUp = functions.auth.user().onCreate(user => {
     .doc(user.uid)
     .set({
       email: user.email,
-      name: user.displayName,
-      photoUrl: user.photoURL,
+      name: (user.displayName ? user.displayName : 'ccweb user'),
+      photoUrl: (user.photoUrl ? user.photoUrl : null),
       topics_count: 0
     });
 });

@@ -5,6 +5,7 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '/', component: () => import('pages/Index.vue') },
+      { path: '/privacy-policy', component: () => import('pages/Policy.vue') },
       // Users visited page
       { path: 'portfolio', component: () => import('pages/user/Portfolio.vue') },
       { path: 'courses', component: () => import('pages/user/Courses.vue') },

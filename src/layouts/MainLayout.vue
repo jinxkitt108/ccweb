@@ -24,7 +24,13 @@
           label="Log Out"
           flat
         />
-        <q-btn v-else @click="openDialog" color="warning" label="Sign in" flat />
+        <q-btn
+          v-else
+          @click="openDialog"
+          color="warning"
+          label="Sign in"
+          flat
+        />
         <q-btn
           @click="drawer = !drawer"
           class="mobile-only"
@@ -39,6 +45,9 @@
     <Login v-model="login_dialog" />
 
     <q-drawer class="mobile-only" v-model="drawer" :breakpoint="500">
+      <div class="text-center q-my-md">
+        <q-img src="~assets/app_images/logo.png" width="80px" />
+      </div>
       <q-scroll-area class="fit">
         <q-list>
           <template v-for="(link, index) in links">
@@ -55,12 +64,7 @@
             </q-item>
           </template>
           <q-separator />
-          <q-item
-            v-if="currentUser"
-            class="text-center"
-            clickable
-            v-ripple
-          >
+          <q-item v-if="currentUser" class="text-center" clickable v-ripple>
             <q-item-section class="text-bold">
               Log Out
             </q-item-section>
@@ -110,7 +114,7 @@ export default {
       links: [
         { name: "Home", path: "/" },
         { name: "Portfolio", path: "/portfolio" },
-        { name: "Courses", path: "/courses" },
+        // { name: "Courses", path: "/courses" },
         { name: "Discussions", path: "/discussions" }
       ]
     };

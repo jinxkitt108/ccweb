@@ -11,13 +11,13 @@
         narrow-indicator
       >
         <q-tab name="topics" label="Topics" />
+        <q-tab v-if="currentUser" name="your_topics" label="Your Topics" />
         <q-tab v-if="currentUser" name="create" label="Create Topic" />
       </q-tabs>
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="topics">
           <q-table
             flat
-            title="Latest"
             :data="topics"
             row-key="id"
             :filter="filter"
@@ -81,16 +81,60 @@
             </template>
           </q-table>
         </q-tab-panel>
+        <q-tab-panel name="your_topics">
+          <q-table
+            flat
+            :data="your_topics"
+            row-key="id"
+            :filter="filter"
+            :rows-per-page-options="[10, 20]"
+            hide-header
+          >
+            <template v-slot:top-right>
+              <q-input
+                color="grey"
+                outlined
+                rounded
+                dense
+                debounce="300"
+                v-model="filter"
+                placeholder="Search"
+              >
+                <template v-slot:append>
+                  <q-icon name="search" />
+                </template>
+              </q-input>
+            </template>
+
+            <template v-slot:body="props">
+              <q-tr :props="props">
+                <q-td key="title" :props="props">
+                  <q-item>
+                    <q-item-section class="text-bold text-subtitle1">
+                      <q-item-label
+                        @click="view(props.row.id)"
+                        class="cursor-pointer"
+                        >{{ props.row.title }}
+                      </q-item-label>
+                      <q-item-label caption class="text-grey-8">
+                        {{ props.row.comments_count }}
+                        <q-icon name="chat" class="q-mr-lg" />
+                        {{ props.row.views }}
+                        <q-icon name="visibility" />
+                      </q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-td>
+              </q-tr>
+            </template>
+          </q-table>
+        </q-tab-panel>
         <q-tab-panel name="create">
           <q-card>
             <q-card-section>
               <div class="text-h6">Create Topic</div>
               <q-form @submit="saveTopic" class="q-gutter-md">
-                <q-input
-                  v-model="topic_form.title"
-                  label="Title"
-                  dense
-                />
+                <q-input v-model="topic_form.title" label="Title" dense />
                 <q-editor
                   :rules="[val => !!val || 'Field is required']"
                   aria-required
@@ -228,12 +272,17 @@ export default {
   },
 
   computed: {
-    ...mapState("topics", ["topics"]),
+    ...mapState("topics", ["topics", "your_topics"]),
     ...mapState("auth", ["currentUser"])
   },
 
   methods: {
-    ...mapActions("topics", ["addNewTopic", "getTopics", "getTopicById"]),
+    ...mapActions("topics", [
+      "addNewTopic",
+      "getTopics",
+      "getYourTopics",
+      "getTopicById"
+    ]),
 
     formatDate(timestamp) {
       let date = new Date(timestamp.seconds * 1000);
@@ -243,16 +292,16 @@ export default {
     view(id) {
       this.getTopicById(id).then(() => {
         this.$router.push("/discussions/" + id);
-      })
+      });
     },
     saveTopic() {
-      if(this.topic_form.body){
+      if (this.topic_form.body) {
         this.addNewTopic(this.topic_form);
       } else {
         this.$q.dialog({
           title: "Alert",
-          message: "Textarea field is required!",
-        })
+          message: "Textarea field is required!"
+        });
       }
     },
     closeDialog() {
@@ -269,6 +318,7 @@ export default {
 
   created() {
     this.getTopics();
+    this.getYourTopics();
   }
 };
 </script>

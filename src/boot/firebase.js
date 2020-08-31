@@ -20,9 +20,10 @@ var firebaseConfig = {
 let firebaseApp = firebase.initializeApp(firebaseConfig);
 let auth = firebaseApp.auth();
 let db = firebaseApp.firestore();
+let authPersistence = firebase.auth.Auth.Persistence
 let timestamp = firebase.firestore.Timestamp
 let fieldValue = firebase.firestore.FieldValue
 const facebookProvider = new firebase.auth.FacebookAuthProvider();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-export { auth, db, timestamp, fieldValue, facebookProvider, googleProvider };
+export { auth, db, timestamp, fieldValue, facebookProvider, googleProvider, authPersistence };

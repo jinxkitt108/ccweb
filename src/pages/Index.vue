@@ -296,7 +296,7 @@
       </div>
 
       <div class="col-sm-4">
-        <h1 class="text-subtitle2">CREDITS</h1>
+        <h1 class="text-subtitle2">DEVELOPER</h1>
         <div class="text-caption">
           Icons made by
           <a
@@ -313,6 +313,9 @@
           >
             www.flaticon.com</a
           >
+        </div>
+        <div class="text-caption">
+          <a href="/privacy-policy" class="text-white" style="text-decoration: none">Privacy Policy</a>
         </div>
       </div>
     </div>
