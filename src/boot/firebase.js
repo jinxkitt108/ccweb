@@ -22,5 +22,7 @@ let auth = firebaseApp.auth();
 let db = firebaseApp.firestore();
 let timestamp = firebase.firestore.Timestamp
 let fieldValue = firebase.firestore.FieldValue
+const facebookProvider = new firebase.auth.FacebookAuthProvider();
+const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-export { auth, db, timestamp, fieldValue };
+export { auth, db, timestamp, fieldValue, facebookProvider, googleProvider };

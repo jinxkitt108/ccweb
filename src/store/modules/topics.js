@@ -1,4 +1,4 @@
-import { db, timestamp, fieldValue } from "boot/firebase";
+import { auth, db, timestamp, fieldValue } from "boot/firebase";
 import { Notify } from "quasar";
 import { Loading } from "quasar";
 
@@ -16,6 +16,7 @@ const actions = {
     let ref = db.collection("topics");
     ref
       .add({
+        author_id: auth.currentUser.uid,
         title: payload.title,
         body: payload.body,
         created_at: timestamp.now(),
@@ -23,18 +24,27 @@ const actions = {
         views: 0
       })
       .then(res => {
-        Loading.hide();
-        commit("setNewDocAdded", {
-          ...payload,
-          id: res.id,
-          created_at: res.created_at,
-          comments_count: 0
-        });
-        Notify.create({
-          message: "New topic added!",
-          position: "center",
-          color: "positive",
-          icon: "thumb_up"
+        res.get().then(doc => {
+          let userRef = db.collection("users").doc(auth.currentUser.uid);
+          userRef.update("topics_count", fieldValue.increment(1));
+          userRef.get().then(user => {
+            const author = user.data();
+            Loading.hide();
+            commit("setNewDocAdded", {
+              ...payload,
+              id: res.id,
+              author_name: author.name,
+              author_photoUrl: author.photoUrl,
+              created_at: doc.data().created_at,
+              comments_count: 0
+            });
+            Notify.create({
+              message: "New topic added!",
+              position: "center",
+              color: "positive",
+              icon: "thumb_up"
+            });
+          });
         });
       })
       .catch(err => {
@@ -44,14 +54,21 @@ const actions = {
   },
   // Get Topics
   async getTopics({ commit }) {
-    let docArray = [];
-    let ref = db.collection("topics").orderBy('created_at');
-    let snap = await ref.get();
-    snap.docs.forEach(doc => {
-      docArray.push({...doc.data(), id: doc.id});
+    commit("clearTopics", []);
+    let ref = db.collection("topics").orderBy("created_at");
+    ref.get().then(snapshot => {
+      snapshot.forEach(doc => {
+        let topic = doc.data();
+        topic.id = doc.id;
+        let userRef = db.collection("users").doc(topic.author_id);
+        userRef.get().then(snap => {
+          let user = snap.data();
+          topic.author_name = user.name;
+          topic.author_photoUrl = user.photoUrl;
+          commit("setTopics", topic);
+        });
+      });
     });
-
-    commit("setTopics", docArray);
   },
   // Update Topic
   async updateTopic({ commit }, payload) {
@@ -71,7 +88,7 @@ const actions = {
           message: "Topic updated!",
           position: "center",
           color: "positive",
-          icon: "thumb_up"
+          icon: "check"
         });
       })
       .catch(err => {
@@ -101,16 +118,15 @@ const actions = {
       .collection("topics")
       .doc(payload.topic_id)
       .collection("comments");
-    const process = ref
+    ref
       .add({
+        author_id: auth.currentUser.uid,
         topic_id: payload.topic_id,
         reply_to: payload.reply_to,
         body: payload.body,
         created_at: timestamp.now()
       })
       .then(res => {
-        // commit("setComments", { ...res.data(), id: res.id});
-
         //Add Comment Count
         let topicRef = db.collection("topics").doc(payload.topic_id);
         topicRef.update("comments_count", fieldValue.increment(1));
@@ -127,9 +143,20 @@ const actions = {
     Loading.show();
     let ref = db.collection("topics").doc(id);
     ref.update("views", fieldValue.increment(1));
-    const doc = await ref.get();
-    commit("setDocDetails", { ...doc.data(), id: doc.id, comments: [] });
-    dispatch("getComments", doc.id);
+    let doc = await ref.get();
+    let topic = doc.data();
+    let userRef = db.collection("users").doc(topic.author_id);
+    userRef.get().then(snap => {
+      let user = snap.data();
+      commit("setDocDetails", {
+        ...topic,
+        id: doc.id,
+        author_name: user.name,
+        author_photoUrl: user.photoUrl,
+        comments: []
+      });
+      dispatch("getComments", doc.id);
+    });
     Loading.hide();
   },
   //Get Comments
@@ -141,12 +168,21 @@ const actions = {
     ref.onSnapshot({ includeMetadataChanges: false }, snap => {
       let changes = snap.docChanges();
       changes.forEach(change => {
-        let doc = change.doc.data();
-        if (change.type == "added") {
-          commit("setComments", { ...doc, id: change.doc.id });
-        } else if (change.type == "removed") {
-          commit("setRemoveComment", change.doc.id);
-        }
+        let comment = change.doc.data();
+        let userRef = db.collection("users").doc(comment.author_id);
+        userRef.get().then(doc => {
+          let user = doc.data();
+          if (change.type == "added") {
+            commit("setComments", {
+              ...comment,
+              author_name: user.name,
+              author_photoUrl: user.photoUrl,
+              id: change.doc.id
+            });
+          } else if (change.type == "removed") {
+            commit("setRemoveComment", change.doc.id);
+          }
+        });
       });
     });
   },
@@ -170,15 +206,15 @@ const actions = {
 };
 
 const mutations = {
-  setTopics: (state, payload) => (state.topics = payload),
+  clearTopics: (state, payload) => (state.topics = payload),
+  setNewDocAdded: (state, payload) => state.topics.unshift(payload),
+  setTopics: (state, payload) => state.topics.push(payload),
   setUpdatedDoc: (state, payload) => {
-    const index = state.topics.findIndex(doc => doc.id === payload.id);
-    if (index !== -1) {
-      state.topics.splice(index, 1, payload);
-    }
+    state.topic_details.title = payload.title;
+    state.topic_details.body = payload.body;
   },
   setRemovedDoc: (state, id) =>
-    (state.topics = state.topics.filter(doc => doc.id !== id)),
+    (state.topics = state.topics.filter(topic => topic.id !== id)),
   setDocDetails: (state, payload) => (state.topic_details = payload),
   setComments: (state, payload) => state.topic_details.comments.push(payload),
   setRemoveComment: (state, id) =>

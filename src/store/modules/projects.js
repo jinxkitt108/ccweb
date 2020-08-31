@@ -1,4 +1,4 @@
-import { db } from "boot/firebase";
+import { db, auth } from "boot/firebase";
 import { Notify } from "quasar";
 
 const state = {

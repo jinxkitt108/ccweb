@@ -11,7 +11,7 @@
         narrow-indicator
       >
         <q-tab name="topics" label="Topics" />
-        <q-tab v-if="Object.keys(currentUser).length" name="create" label="Create Topic" />
+        <q-tab v-if="currentUser" name="create" label="Create Topic" />
       </q-tabs>
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="topics">
@@ -46,7 +46,13 @@
                   <q-item>
                     <q-item-section avatar>
                       <q-avatar color="indigo" text-color="white">
-                        AA
+                        <q-img
+                          v-if="props.row.author_photoUrl"
+                          :src="props.row.author_photoUrl"
+                        />
+                        <span v-else>{{
+                          props.row.author_name.charAt(0)
+                        }}</span>
                       </q-avatar>
                     </q-item-section>
                     <q-item-section class="text-bold text-subtitle1">
@@ -56,12 +62,16 @@
                         >{{ props.row.title }}
                       </q-item-label>
                       <q-item-label caption
-                        >by Author
+                        >by {{ props.row.author_name }}
                         <span class="q-ml-sm text-bold">&bull;</span>
-                        <span class="q-ml-sm">{{ formatDate(props.row.created_at) }}</span></q-item-label
+                        <span class="q-ml-sm">{{
+                          formatDate(props.row.created_at)
+                        }}</span></q-item-label
                       >
                       <q-item-label caption class="text-grey-8">
-                        {{props.row.comments_count}} <q-icon name="chat" class="q-mr-lg" /> {{props.row.views}}
+                        {{ props.row.comments_count }}
+                        <q-icon name="chat" class="q-mr-lg" />
+                        {{ props.row.views }}
                         <q-icon name="visibility" />
                       </q-item-label>
                     </q-item-section>
@@ -79,10 +89,11 @@
                 <q-input
                   v-model="topic_form.title"
                   label="Title"
-                  required
                   dense
                 />
                 <q-editor
+                  :rules="[val => !!val || 'Field is required']"
+                  aria-required
                   v-model="topic_form.body"
                   :dense="$q.screen.lt.md"
                   :toolbar="[
@@ -202,7 +213,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapState, mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -226,15 +237,23 @@ export default {
 
     formatDate(timestamp) {
       let date = new Date(timestamp.seconds * 1000);
-      return quasarDate.formatDate(date, 'ddd MMMM D, YYYY | h:mm a')
+      return quasarDate.formatDate(date, "ddd MMMM D, YYYY | h:mm a");
     },
 
-    async view(id) {
-      const getTopic = await this.getTopicById(id);
-      this.$router.push("/discussions/" + id);
+    view(id) {
+      this.getTopicById(id).then(() => {
+        this.$router.push("/discussions/" + id);
+      })
     },
     saveTopic() {
-      this.addNewTopic(this.topic_form);
+      if(this.topic_form.body){
+        this.addNewTopic(this.topic_form);
+      } else {
+        this.$q.dialog({
+          title: "Alert",
+          message: "Textarea field is required!",
+        })
+      }
     },
     closeDialog() {
       this.topic_dialog = false;

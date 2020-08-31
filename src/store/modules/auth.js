@@ -1,22 +1,51 @@
-import { auth, db } from "boot/firebase";
+import { auth, db, facebookProvider, googleProvider } from "boot/firebase";
+import { Loading } from "quasar";
 
 const state = {
-  currentUser: {},
-  error: {}
+  currentUser: null,
+  error: null
 };
 
 const getters = {};
 
 const actions = {
-  async loginUser({ commit }, payload) {
-    auth
-      .signInWithEmailAndPassword(payload.email, payload.password)
-      .then(() => {
-        this.$router.push("/admin");
-      })
-      .catch(error => {
-        commit("setLoginError", error);
-      });
+  loginUser({ commit }, payload) {
+    Loading.show();
+    commit("setLoginError", null);
+    if (payload.method == "facebook") {
+      Loading.hide();
+      auth
+        .signInWithPopup(facebookProvider)
+        .then(result => {
+          let user = result.user;
+        })
+        .catch(error => {
+          commit("setLoginError", error);
+          Loading.hide();
+        });
+    } else if (payload.method == "google") {
+      Loading.hide();
+      auth
+        .signInWithPopup(googleProvider)
+        .then(result => {
+          let user = result.user;
+        })
+        .catch(error => {
+          commit("setLoginError", error);
+          Loading.hide();
+        });
+    } else if (payload.method == "standard") {
+      auth
+        .signInWithEmailAndPassword(payload.email, payload.password)
+        .then(result => {
+          let user = result.user;
+          Loading.hide();
+        })
+        .catch(error => {
+          commit("setLoginError", error);
+          Loading.hide();
+        });
+    }
   },
 
   logoutUser() {
@@ -36,11 +65,11 @@ const actions = {
             id: userId,
             name: userDetails.name,
             email: userDetails.email,
-            role: userDetails.role
+            role: userDetails.role ? userDetails.role : null
           });
         });
       } else {
-        commit("setCurrentUser", {});
+        commit("setCurrentUser", null);
       }
     });
   }
