@@ -3,10 +3,10 @@
 node_modules
 
 # Firebase related directories and files
-src/boot/ccweb-cc466-firebase-adminsdk-hym2v-dc338ee64f.json
-src/boot/firebase.js
+/src/boot/ccweb-cc466-firebase-adminsdk-hym2v-dc338ee64f.json
+/src/boot/firebase.js
 .firebase
-functions
+/functions
 # Quasar core related directories
 .quasar
 /dist
