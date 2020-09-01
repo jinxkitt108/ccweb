@@ -106,52 +106,47 @@
     </div>
 
     <!-- Project Section -->
-    <div class="row q-px-md bg-deep-grey-11" style="margin-top: 100px">
-      <div class="col-sm-12 col-md-8">
-        <div class="text-h5 text-center">PROJECTS</div>
-        <div class="row flex flex-center q-pa-lg">
-          <q-card
-            v-for="project in projects"
-            :key="project.id"
-            class="my-card col-sm-12 col-md-3 bg-transparent"
-            dark
-            flat
+
+    <div class="text-bold text-h4 text-center q-mt-xl">PROJECTS</div>
+    <div class="row justify-center q-px-md bg-deep-grey-11">
+      <q-card
+        v-for="project in projects"
+        :key="project.id"
+        class="my-card column items-center col-sm-12 col-md-3 bg-transparent"
+        dark
+        flat
+      >
+        <q-card-section>
+          <div class="text-subtitle1">
+            <q-icon name="shop" size="lg" color="deep-purple-2" />
+            {{ project.name }}
+          </div>
+          <div class="text-caption">
+            Date Started:
+            <span class="q-ml-sm">{{ project.date_started }}</span>
+          </div>
+          <div class="text-caption q-mb-sm">
+            Status:
+            <q-chip icon="construction" color="blue" text-color="white" dense>{{
+              project.status
+            }}</q-chip>
+          </div>
+          <q-btn @click="openLink(project.url)" text-color="white" flat no-caps
+            >View Website</q-btn
           >
-            <q-card-section>
-              <div class="text-subtitle1">
-                <q-icon name="shop" size="lg" color="deep-purple-2" />
-                {{ project.name }}
-              </div>
-              <div class="text-caption">
-                Date Started:
-                <span class="q-ml-sm">{{ project.date_started }}</span>
-              </div>
-              <div class="text-caption q-mb-sm">
-                Status:
-                <q-chip icon="construction" color="blue" text-color="white" dense>{{project.status}}</q-chip>
-              </div>
-              <q-btn
-                @click="openLink(project.url)"
-                text-color="white"
-                flat
-                no-caps
-                >View Website</q-btn
-              >
-            </q-card-section>
-          </q-card>
-        </div>
-      </div>
-      <div class="col-sm-12 col-md-4 q-pt-lg">
-        <q-img
-          src="~assets/app_images/svg/shared_goals.svg"
-          style="max-width: 300px"
-        />
-      </div>
+        </q-card-section>
+      </q-card>
+    </div>
+    <div class="text-center">
+      <q-img
+        src="~assets/app_images/svg/shared_goals.svg"
+        style="max-width: 300px"
+      />
     </div>
 
     <!-- What do I Do? -->
     <div class="what-i-do q-pa-lg" style="margin-top: 150px">
-      <div class="q-my-md text-h4 text-center">What I do?</div>
+      <div class="q-my-md text-h5 text-center">What I do?</div>
       <div class="row justify-center q-px-sm q-gutter-xl">
         <q-card class="my-card col-sm-12 col-md-3 bg-dark" bordered>
           <q-intersection once transition="scale">
@@ -315,7 +310,12 @@
           >
         </div>
         <div class="text-caption">
-          <a href="/privacy-policy" class="text-white" style="text-decoration: none">Privacy Policy</a>
+          <a
+            href="/privacy-policy"
+            class="text-white"
+            style="text-decoration: none"
+            >Privacy Policy</a
+          >
         </div>
       </div>
     </div>
