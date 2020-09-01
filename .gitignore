@@ -2,7 +2,7 @@
 .thumbs.db
 node_modules
 
-# Firebase related directories and files
+# Firebase related directories
 src/boot/firebase.js
 .firebase
 functions
