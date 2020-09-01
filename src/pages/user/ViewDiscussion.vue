@@ -43,8 +43,13 @@
           outlined
           dense
         />
-        <q-dialog v-model="dialog_comment" position="bottom">
-          <q-card style="width: 700px; max-width: 80vw;" class="q-pa-sm">
+        <div class="q-my-lg">
+          Comments ({{ topic_details.comments.length }})
+        </div>
+      </q-card-section>
+      <!-- New Comment Dialog -->
+       <q-dialog v-model="dialog_comment" position="bottom" seamless>
+          <q-card style="width: 800px; max-width: 99vw;" class="q-pa-sm">
             <q-card-section>
               <q-form @submit="saveComment" class="q-gutter-md">
                 <q-input
@@ -63,10 +68,6 @@
             </q-card-section>
           </q-card>
         </q-dialog>
-        <div class="q-my-lg">
-          Comments ({{ topic_details.comments.length }})
-        </div>
-      </q-card-section>
       <!-- Display All Comments -->
       <q-card-section>
         <div
