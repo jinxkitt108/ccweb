@@ -41,7 +41,7 @@
             </template>
 
             <template v-slot:body="props">
-              <q-tr :props="props">
+              <q-tr :props="props" @click="view(props.row.id)" class="cursor-pointer">
                 <q-td key="title" :props="props">
                   <q-item>
                     <q-item-section avatar>
@@ -57,8 +57,6 @@
                     </q-item-section>
                     <q-item-section class="text-bold text-subtitle1">
                       <q-item-label
-                        @click="view(props.row.id)"
-                        class="cursor-pointer"
                         >{{ props.row.title }}
                       </q-item-label>
                       <q-item-label caption
