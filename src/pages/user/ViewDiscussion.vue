@@ -18,14 +18,13 @@
             </q-avatar>
           </q-item-section>
           <q-item-section>
-            <q-item-label class="text-bold text-h5">{{
-              topic_details.title
-            }}</q-item-label>
-            <q-item-label caption
-              >by {{topic_details.author_name}}<span class="text-italic q-ml-md">{{
-                formatDate(topic_details.created_at)
-              }}</span></q-item-label
-            >
+            <q-item-label class="text-bold text-h5">
+              {{ topic_details.title }}
+            </q-item-label>
+            <q-item-label caption>by {{topic_details.author_name}}</q-item-label>
+            <q-item-label caption class="text-italic">
+              {{ formatDate(topic_details.created_at) }}
+            </q-item-label>
             <q-item-label v-if="currentUser && currentUser.id == topic_details.author_id">
               <q-btn @click="deleteTopic(topic_details.id)" label="Delete" text-color="red-5" no-caps flat />
               <q-btn @click="openEditDialog" label="Edit" no-caps flat />
@@ -68,9 +67,10 @@
           Comments ({{ topic_details.comments.length }})
         </div>
       </q-card-section>
+      <!-- Display All Comments -->
       <q-card-section>
         <div
-          class="q-pa-sm q-mb-md bg-grey-2"
+          class="q-mb-md q-pa-sm rounded-borders bg-grey-11"
           v-for="comment in topic_details.comments"
           :key="comment.id"
         >

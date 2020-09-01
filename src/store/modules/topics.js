@@ -177,11 +177,11 @@ const actions = {
   },
   //Get Comments
   getComments({ commit }, id) {
-    let ref = db
+    let topicRef = db
       .collection("topics")
       .doc(id)
       .collection("comments");
-    ref.onSnapshot({ includeMetadataChanges: false }, snap => {
+    topicRef.onSnapshot({ includeMetadataChanges: false }, snap => {
       let changes = snap.docChanges();
       changes.forEach(change => {
         let comment = change.doc.data();
@@ -191,8 +191,8 @@ const actions = {
           if (change.type == "added") {
             commit("setComments", {
               ...comment,
-              author_name: user.name,
-              author_photoUrl: user.photoUrl,
+              author_name: (user.name ? user.name : 'ccweb user'),
+              author_photoUrl: (user.photoUrl ? user.photoUrl : null),
               id: change.doc.id
             });
           } else if (change.type == "removed") {
