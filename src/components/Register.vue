@@ -26,6 +26,7 @@
             <q-form @submit="register" class="q-gutter-md">
               <q-input
                 v-model="register_form.email"
+                :rules="[val => !!val || 'Email is required']"
                 label="Email"
                 rounded
                 outlined
@@ -34,6 +35,7 @@
               <q-input
                 v-model="register_form.password"
                 label="Password"
+                :rules="[val => !!val || 'Password is required']"
                 :type="isPwd ? 'password' : 'text'"
                 rounded
                 outlined
@@ -63,6 +65,7 @@
             <q-form @submit="saveUser">
               <q-input
                 v-model="user_form.name"
+                :rules="[val => !!val || 'Name is required']"
                 placeholder="Name"
                 rounded
                 outlined
