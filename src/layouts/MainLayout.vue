@@ -2,7 +2,7 @@
   <q-layout view="hHh lpR fFf">
     <q-header reveal class="bg-primary">
       <q-toolbar>
-        <q-toolbar-title>
+        <q-toolbar-title @click="$router.push('/')" class="cursor-pointer">
           <q-avatar square>
             <img src="~assets/app_images/logo.png" />
           </q-avatar>
@@ -84,17 +84,6 @@
         <q-btn fab icon="keyboard_arrow_up" color="accent" />
       </q-page-scroller>
     </q-page-container>
-
-    <!-- <q-footer reveal elevated class="bg-dark text-white q-pa-sm">
-      <div class="text-center">
-        <span>
-          All rights reserve 2020.
-        </span>
-        <p class="text-caption">
-          This is the official website of Clint Clarido
-        </p>
-      </div>
-    </q-footer> -->
   </q-layout>
 </template>
 
