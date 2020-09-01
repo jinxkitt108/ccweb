@@ -17,13 +17,26 @@
             exact
           />
         </q-tabs>
-        <q-btn
-          v-if="currentUser"
-          @click="logout"
-          color="warning"
-          label="Log Out"
-          flat
-        />
+        <q-btn v-if="currentUser" color="indigo-1" round>
+          <q-avatar color="indigo">
+            <q-img v-if="currentUser.photoUrl" :src="currentUser.photoUrl" />
+            <span v-else>{{currentUser.name.charAt(0)}}</span>
+          </q-avatar>
+          <q-menu
+            transition-show="flip-right"
+            transition-hide="flip-left"
+          >
+            <q-list style="min-width: 100px">
+              <q-item to="/account-settings" clickable>
+                <q-item-section>Settings</q-item-section>
+              </q-item>
+              <q-separator />
+              <q-item @click="logout" clickable>
+                <q-item-section>Log Out</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
         <q-btn
           v-else
           @click="openDialog"
