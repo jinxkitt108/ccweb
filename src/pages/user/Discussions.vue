@@ -11,7 +11,12 @@
         narrow-indicator
       >
         <q-tab name="topics" label="Topics" />
-        <q-tab v-if="currentUser" name="your_topics" label="Your Topics" />
+        <q-tab
+          v-if="currentUser"
+          @click="fetchYourTopics"
+          name="your_topics"
+          label="Your Topics"
+        />
         <q-tab v-if="currentUser" name="create" label="Create Topic" />
       </q-tabs>
       <q-tab-panels v-model="tab" animated>
@@ -24,8 +29,9 @@
             :rows-per-page-options="[10, 20]"
             hide-header
           >
-            <template v-slot:top-right>
+            <template v-slot:top>
               <q-input
+                style="width: 500px"
                 color="grey"
                 outlined
                 rounded
@@ -41,7 +47,11 @@
             </template>
 
             <template v-slot:body="props">
-              <q-tr :props="props" @click="view(props.row.id)" class="cursor-pointer">
+              <q-tr
+                :props="props"
+                @click="view(props.row.id)"
+                class="cursor-pointer"
+              >
                 <q-td key="title" :props="props">
                   <q-item>
                     <q-item-section avatar>
@@ -56,16 +66,15 @@
                       </q-avatar>
                     </q-item-section>
                     <q-item-section class="text-bold text-subtitle1">
-                      <q-item-label
-                        >{{ props.row.title }}
+                      <q-item-label class="text-indigo-10">
+                        {{ props.row.title }}
                       </q-item-label>
-                      <q-item-label caption
-                        >by {{ props.row.author_name }}
-                        <span class="q-ml-sm text-bold">&bull;</span>
-                        <span class="q-ml-sm">{{
-                          formatDate(props.row.created_at)
-                        }}</span></q-item-label
-                      >
+                      <q-item-label caption>
+                        by {{ props.row.author_name }}
+                      </q-item-label>
+                      <q-item-label caption class="q-mb-sm">
+                        <span class="text-italic">{{ formatDate(props.row.created_at) }}</span>
+                      </q-item-label>
                       <q-item-label caption class="text-grey-8">
                         {{ props.row.comments_count }}
                         <q-icon name="chat" class="q-mr-lg" />
@@ -105,14 +114,17 @@
             </template>
 
             <template v-slot:body="props">
-              <q-tr :props="props">
+              <q-tr :props="props" @click="view(props.row.id)">
                 <q-td key="title" :props="props">
                   <q-item>
                     <q-item-section class="text-bold text-subtitle1">
-                      <q-item-label
-                        @click="view(props.row.id)"
-                        class="cursor-pointer"
-                        >{{ props.row.title }}
+                      <q-item-label class="text-indigo-10">
+                        {{ props.row.title }}
+                      </q-item-label>
+                      <q-item-label caption>
+                        <span class="text-italic"
+                          >Created {{ formatDate(props.row.created_at) }}</span
+                        >
                       </q-item-label>
                       <q-item-label caption class="text-grey-8">
                         {{ props.row.comments_count }}
@@ -282,6 +294,10 @@ export default {
       "getTopicById"
     ]),
 
+    fetchYourTopics() {
+      this.getYourTopics();
+    },
+
     formatDate(timestamp) {
       let date = new Date(timestamp.seconds * 1000);
       return quasarDate.formatDate(date, "ddd MMMM D, YYYY | h:mm a");
@@ -316,7 +332,6 @@ export default {
 
   created() {
     this.getTopics();
-    this.getYourTopics();
   }
 };
 </script>
