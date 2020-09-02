@@ -7,6 +7,7 @@ const routes = [
       { path: '/', component: () => import('pages/Index.vue') },
       { path: '/privacy-policy', component: () => import('pages/Policy.vue') },
       // Users visited page
+      { path: 'account-settings', component: () => import('pages/user/AccountSettings.vue') },
       { path: 'portfolio', component: () => import('pages/user/Portfolio.vue') },
       { path: 'courses', component: () => import('pages/user/Courses.vue') },
       { path: 'discussions', component: () => import('pages/user/Discussions.vue') },
