@@ -5,7 +5,6 @@ node_modules
 # Firebase related directories and files
 src/boot/firebase.js
 .firebase
-functions
 # Quasar core related directories
 .quasar
 /dist
