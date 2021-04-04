@@ -5,7 +5,8 @@ import { Loading } from "quasar";
 const state = {
   topics: [],
   your_topics: [],
-  topic_details: null
+  topic_details: null,
+  topic_loading_state: false,
 };
 
 const getters = {};
@@ -71,8 +72,9 @@ const actions = {
   // Get Topics
   async getTopics({ commit }) {
     commit("clearTopics", []);
-    let ref = db.collection("topics").orderBy("created_at");
-    ref.get().then(snapshot => {
+    commit("setLoadingState", true);
+    let ref = db.collection("topics").orderBy("created_at", "desc");
+    await ref.get().then(snapshot => {
       snapshot.forEach(doc => {
         let topic = doc.data();
         topic.id = doc.id;
@@ -85,6 +87,7 @@ const actions = {
         });
       });
     });
+    commit("setLoadingState", false);
   },
   // Update Topic
   async updateTopic({ commit }, payload) {
@@ -181,7 +184,7 @@ const actions = {
       .collection("topics")
       .doc(id)
       .collection("comments");
-    topicRef.onSnapshot({ includeMetadataChanges: false }, snap => {
+    topicRef.orderBy("created_at", "asc").onSnapshot({ includeMetadataChanges: false }, snap => {
       let changes = snap.docChanges();
       changes.forEach(change => {
         let comment = change.doc.data();
@@ -220,10 +223,15 @@ const actions = {
       color: "positive",
       icon: "thumb_up"
     });
+  },
+  //Clear Topic Details on leaving
+  clearTopicDetails ({ commit }) {
+    commit('setDocDetails', null)
   }
 };
 
 const mutations = {
+  setLoadingState: (state, payload) => (state.topic_loading_state = payload),
   clearTopics: (state, payload) => (state.topics = payload),
   setNewDocAdded: (state, payload) => state.topics.unshift(payload),
   setYourTopics: (state, payload) => (state.your_topics = payload),

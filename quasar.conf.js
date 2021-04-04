@@ -24,7 +24,8 @@ module.exports = function (/* ctx */) {
       'vform',
       'auth-routes',
       'quasar-utils',
-      'components'
+      'components',
+      'quasar-plugins'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -35,14 +36,14 @@ module.exports = function (/* ctx */) {
     // https://github.com/quasarframework/quasar/tree/dev/extras
     extras: [
       // 'ionicons-v4',
-      // 'mdi-v5',
+      'mdi-v5',
       // 'fontawesome-v5',
       // 'eva-icons',
       // 'themify',
       // 'line-awesome',
-      // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
+      'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
-      'roboto-font', // optional, you are not bound to it
+      //'roboto-font', // optional, you are not bound to it
       'material-icons', // optional, you are not bound to it
     ],
 
@@ -99,8 +100,10 @@ cfg.module.rules.push({
       // (like functional components as one of the examples),
       // you can manually specify Quasar components/directives to be available everywhere:
       //
-      // components: [],
-      // directives: [],
+      components: [],
+      directives: [
+        'ClosePopup'
+      ],
 
       // Quasar plugins
       plugins: ['Loading', 'Notify', 'Meta', 'Cookies', 'LoadingBar', 'Dialog']

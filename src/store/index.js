@@ -6,6 +6,7 @@ import auth from "./modules/auth";
 import portfolios from "./modules/portfolios";
 import projects from "./modules/projects";
 import topics from "./modules/topics";
+import messages from "./modules/messages";
 import createPersistedState from 'vuex-persistedstate';
 
 Vue.use(Vuex)
@@ -22,7 +23,7 @@ Vue.use(Vuex)
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
-      auth, portfolios, projects, topics
+      auth, portfolios, projects, topics, messages
     },
 
     // enable strict mode (adds overhead!)

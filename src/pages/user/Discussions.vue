@@ -1,6 +1,6 @@
 <template>
-  <q-page padding>
-    <div class="q-mx-auto" style="max-width: 1000px">
+  <q-page>
+    <div class="q-mx-auto q-my-md" style="max-width: 1000px">
       <q-tabs
         v-model="tab"
         dense
@@ -27,8 +27,29 @@
             row-key="id"
             :filter="filter"
             :rows-per-page-options="[10, 20]"
+            no-data-label="This might be connection issue."
+            :loading="topic_loading_state"
             hide-header
+            dense
           >
+            <template v-slot:no-data>
+              <div class="q-pa-md full-width">
+                <q-item v-for="(n, index) in 3" :key="index">
+                  <q-item-section avatar>
+                    <q-skeleton type="QAvatar" />
+                  </q-item-section>
+
+                  <q-item-section>
+                    <q-item-label>
+                      <q-skeleton height="100px" />
+                    </q-item-label>
+                    <q-item-label caption>
+                      <q-skeleton height="10px" />
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </div>
+            </template>
             <template v-slot:top>
               <q-input
                 style="width: 500px"
@@ -73,7 +94,9 @@
                         by {{ props.row.author_name }}
                       </q-item-label>
                       <q-item-label caption class="q-mb-sm">
-                        <span class="text-italic">{{ formatDate(props.row.created_at) }}</span>
+                        <span class="text-italic">{{
+                          formatDate(props.row.created_at)
+                        }}</span>
                       </q-item-label>
                       <q-item-label caption class="text-grey-8">
                         {{ props.row.comments_count }}
@@ -95,8 +118,27 @@
             row-key="id"
             :filter="filter"
             :rows-per-page-options="[10, 20]"
+            no-data-label="This might be a connection issue."
             hide-header
           >
+            <template v-slot:no-data>
+              <div class="q-pa-md full-width">
+                <q-item v-for="(n, index) in 3" :key="index">
+                  <q-item-section avatar>
+                    <q-skeleton type="QAvatar" />
+                  </q-item-section>
+
+                  <q-item-section>
+                    <q-item-label>
+                      <q-skeleton height="100px" />
+                    </q-item-label>
+                    <q-item-label caption>
+                      <q-skeleton height="10px" />
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </div>
+            </template>
             <template v-slot:top-right>
               <q-input
                 color="grey"
@@ -123,7 +165,7 @@
                       </q-item-label>
                       <q-item-label caption>
                         <span class="text-italic"
-                          >Created {{ formatDate(props.row.created_at) }}</span
+                          >{{ formatDate(props.row.created_at) }}</span
                         >
                       </q-item-label>
                       <q-item-label caption class="text-grey-8">
@@ -140,11 +182,13 @@
           </q-table>
         </q-tab-panel>
         <q-tab-panel name="create">
-          <q-card>
+          <q-card flat>
             <q-card-section>
               <div class="text-h6">Create Topic</div>
               <q-form @submit="saveTopic" class="q-gutter-md">
                 <q-input v-model="topic_form.title" label="Title" dense />
+
+                <!-- <quasar-tiptap v-bind="options" /> -->
                 <q-editor
                   :rules="[val => !!val || 'Field is required']"
                   aria-required
@@ -267,13 +311,19 @@
 </template>
 
 <script>
+// import { QuasarTiptap, RecommendedExtensions } from 'quasar-tiptap'
+// import 'quasar-tiptap/lib/index.css'
 import { mapActions, mapState, mapGetters } from "vuex";
 export default {
   data() {
     return {
-      filter: "",
       topic_dialog: false,
       tab: "topics",
+      filter: "",
+      options: {
+        content: "content",
+        editable: true
+      },
       topic_form: new Form({
         title: "",
         body: ""
@@ -282,7 +332,12 @@ export default {
   },
 
   computed: {
-    ...mapState("topics", ["topics", "your_topics"]),
+    ...mapState("topics", [
+      "topics",
+      "your_topics",
+      "topic_details",
+      "topic_loading_state"
+    ]),
     ...mapState("auth", ["currentUser"])
   },
 
@@ -300,7 +355,7 @@ export default {
 
     formatDate(timestamp) {
       let date = new Date(timestamp.seconds * 1000);
-      return quasarDate.formatDate(date, "ddd MMMM D, YYYY | h:mm a");
+      return quasarDate.formatDate(date, "ddd MMM D, YYYY | h:mma");
     },
 
     view(id) {

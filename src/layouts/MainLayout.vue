@@ -1,31 +1,16 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header reveal class="bg-primary">
-      <q-toolbar>
+    <q-header reveal>
+      <q-toolbar class="bg-primary">
         <q-toolbar-title @click="$router.push('/')" class="cursor-pointer">
-          <q-avatar square>
-            <img src="~assets/app_images/logo.png" />
-          </q-avatar>
-          CCWeb
+          <q-img src="app_icons/ccweb-logo.png" style="width: 100px" />
         </q-toolbar-title>
-        <q-tabs class="desktop-only q-px-lg">
-          <q-route-tab
-            v-for="link in links"
-            :key="link.path"
-            :to="link.path"
-            :label="link.name"
-            exact
-          />
-        </q-tabs>
         <q-btn v-if="currentUser" color="indigo-1" round>
           <q-avatar color="indigo">
             <q-img v-if="currentUser.photoUrl" :src="currentUser.photoUrl" />
-            <span v-else>{{currentUser.name.charAt(0)}}</span>
+            <span v-else>{{ currentUser.name.charAt(0) }}</span>
           </q-avatar>
-          <q-menu
-            transition-show="flip-right"
-            transition-hide="flip-left"
-          >
+          <q-menu transition-show="flip-right" transition-hide="flip-left">
             <q-list style="min-width: 100px">
               <q-item to="/account-settings" clickable>
                 <q-item-section>Settings</q-item-section>
@@ -46,18 +31,28 @@
         />
         <q-btn
           @click="drawer = !drawer"
-          class="mobile-only"
+          v-if="$q.platform.is.mobile"
           flat
           round
           dense
           icon="more_vert"
         />
       </q-toolbar>
+
+      <q-tabs v-if="$q.platform.is.desktop" class="q-px-lg">
+        <q-route-tab
+          v-for="link in links"
+          :key="link.path"
+          :to="link.path"
+          :label="link.name"
+          exact
+        />
+      </q-tabs>
     </q-header>
 
     <Login v-model="login_dialog" />
 
-    <q-drawer class="mobile-only" v-model="drawer" :breakpoint="500">
+    <q-drawer v-if="$q.platform.is.mobile" v-model="drawer" :breakpoint="500">
       <div class="text-center q-my-md">
         <q-img src="~assets/app_images/logo.png" width="80px" />
       </div>
@@ -77,7 +72,7 @@
             </q-item>
           </template>
           <q-separator />
-          <q-item v-if="currentUser" class="text-center" clickable v-ripple>
+          <q-item @click="logout" v-if="currentUser" class="text-center" clickable v-ripple>
             <q-item-section class="text-bold">
               Log Out
             </q-item-section>
@@ -115,8 +110,7 @@ export default {
       login_dialog: false,
       links: [
         { name: "Home", path: "/" },
-        { name: "Portfolio", path: "/portfolio" },
-        // { name: "Courses", path: "/courses" },
+        { name: "Courses", path: "/courses" },
         { name: "Discussions", path: "/discussions" }
       ]
     };

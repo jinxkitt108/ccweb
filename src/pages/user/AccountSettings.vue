@@ -31,7 +31,7 @@
             </q-btn>
           </div>
           <div class="row justify-end">
-            <q-btn type="submit" :disable="!edit_mode" label="Update" color="indigo" />
+            <q-btn type="submit" :disable="!edit_mode" label="Update" color="indigo" style="margin-right: 100px" />
           </div>
         </q-form>
       </q-card-section>

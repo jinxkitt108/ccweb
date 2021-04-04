@@ -15,6 +15,7 @@
     "core-js": "^3.6.5",
     "firebase": "^7.17.1",
     "quasar": "^1.0.0",
+    "quasar-tiptap": "^1.6.0",
     "vform": "^1.0.1",
     "vuex-persistedstate": "^3.1.0"
   },

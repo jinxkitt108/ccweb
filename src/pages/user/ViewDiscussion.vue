@@ -1,6 +1,6 @@
 <template>
-  <q-page padding>
-    <q-card class="q-mx-auto q-pa-md" style="max-width: 1000px">
+  <q-page>
+    <q-card class="my-card q-mx-auto" style="max-width: 1000px">
       <q-card-section>
         <div class="q-mb-sm">
           <q-btn
@@ -13,26 +13,40 @@
         <q-item>
           <q-item-section avatar>
             <q-avatar size="50px" color="indigo" text-color="white">
-              <q-img v-if="topic_details.author_photoUrl" :src="topic_details.author_photoUrl" />
-              <span v-else>{{topic_details.author_name.charAt(0)}}</span>
+              <q-img
+                v-if="topic_details.author_photoUrl"
+                :src="topic_details.author_photoUrl"
+              />
+              <span v-else>{{ topic_details.author_name.charAt(0) }}</span>
             </q-avatar>
           </q-item-section>
           <q-item-section>
-            <q-item-label class="text-bold text-h5">
-              {{ topic_details.title }}
-            </q-item-label>
-            <q-item-label caption>by {{topic_details.author_name}}</q-item-label>
+            <q-item-label caption
+              >by {{ topic_details.author_name }}</q-item-label
+            >
             <q-item-label caption class="text-italic">
               {{ formatDate(topic_details.created_at) }}
             </q-item-label>
-            <q-item-label v-if="currentUser && currentUser.id == topic_details.author_id">
-              <q-btn @click="deleteTopic(topic_details.id)" label="Delete" text-color="red-5" no-caps flat />
+            <q-item-label
+              v-if="currentUser && currentUser.id == topic_details.author_id"
+            >
+              <q-btn
+                @click="deleteTopic(topic_details.id)"
+                label="Delete"
+                text-color="red-5"
+                no-caps
+                flat
+              />
               <q-btn @click="openEditDialog" label="Edit" no-caps flat />
             </q-item-label>
           </q-item-section>
         </q-item>
       </q-card-section>
-      <q-card-section v-html="topic_details.body" />
+
+      <div class="text-bold text-h6 q-mx-md">
+        {{ topic_details.title }}
+      </div>
+      <q-card-section class="topic_body" v-html="topic_details.body" />
       <q-card-section>
         <q-input
           @click="currentUser ? openDialog() : openLoginDialog()"
@@ -48,26 +62,26 @@
         </div>
       </q-card-section>
       <!-- New Comment Dialog -->
-       <q-dialog v-model="dialog_comment" position="bottom" seamless>
-          <q-card style="width: 800px; max-width: 99vw;" class="q-pa-sm">
-            <q-card-section>
-              <q-form @submit="saveComment" class="q-gutter-md">
-                <q-input
-                  v-model="comment_form.body"
-                  type="textarea"
-                  placeholder="Type comment.."
-                  outlined
-                  dense
-                />
-                <div class="row q-gutter-sm">
-                  <q-space />
-                  <q-btn label="Cancel" flat v-close-popup />
-                  <q-btn type="submit" label="Submit" color="indigo" />
-                </div>
-              </q-form>
-            </q-card-section>
-          </q-card>
-        </q-dialog>
+      <q-dialog v-model="dialog_comment" position="bottom" seamless>
+        <q-card style="width: 800px; max-width: 99vw;" class="q-pa-sm">
+          <q-card-section>
+            <q-form @submit="saveComment" class="q-gutter-md">
+              <q-input
+                v-model="comment_form.body"
+                type="textarea"
+                placeholder="Type comment.."
+                outlined
+                dense
+              />
+              <div class="row q-gutter-sm">
+                <q-space />
+                <q-btn label="Cancel" flat v-close-popup />
+                <q-btn type="submit" label="Submit" color="indigo" />
+              </div>
+            </q-form>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
       <!-- Display All Comments -->
       <q-card-section>
         <div
@@ -78,12 +92,17 @@
           <q-item>
             <q-item-section avatar>
               <q-avatar size="40px" color="indigo" text-color="white">
-                <q-img v-if="comment.author_photoUrl" :src="comment.author_photoUrl" />
-                <span v-else>{{comment.author_name.charAt(0)}}</span>
+                <q-img
+                  v-if="comment.author_photoUrl"
+                  :src="comment.author_photoUrl"
+                />
+                <span v-else>{{ comment.author_name.charAt(0) }}</span>
               </q-avatar>
             </q-item-section>
             <q-item-section>
-              <q-item-label class="text-caption">{{ comment.author_name}}</q-item-label>
+              <q-item-label class="text-caption">{{
+                comment.author_name
+              }}</q-item-label>
               <q-item-label caption>{{
                 formatDate(comment.created_at)
               }}</q-item-label>
@@ -103,24 +122,36 @@
           </div>
         </div>
         <div class="row justify-center">
-          <q-btn @click="currentUser ? openDialog() : openLoginDialog()" label="Add Comment" rounded no-caps />
+          <q-btn
+            @click="currentUser ? openDialog() : openLoginDialog()"
+            label="Add Comment"
+            rounded
+            no-caps
+          />
         </div>
       </q-card-section>
     </q-card>
     <!-- Edit Topic Dialog -->
-    <q-dialog maximized v-model="edit_dialog" transition-show="slide-up" transition-hide="slide-down">
+    <q-dialog
+      maximized
+      v-model="edit_dialog"
+      transition-show="slide-up"
+      transition-hide="slide-down"
+    >
       <q-card>
         <q-card-section class="q-mx-auto" style="max-width: 1000px">
-          <q-btn icon="close" label="Close" class="q-mb-sm float-right" dense flat v-close-popup />
+          <q-btn
+            icon="close"
+            label="Close"
+            class="q-mb-sm float-right"
+            dense
+            flat
+            v-close-popup
+          />
           <div class="text-h6">Edit Topic</div>
           <q-form @submit="saveTopic" class="q-gutter-md">
-            <q-input
-              v-model="topic_form.title"
-              label="Title"
-              dense
-            />
+            <q-input v-model="topic_form.title" label="Title" dense />
             <q-editor
-              :rules="[val => !!val || 'Field is required']"
               aria-required
               v-model="topic_form.body"
               :dense="$q.screen.lt.md"
@@ -155,16 +186,7 @@
                     label: $q.lang.editor.formatting,
                     icon: $q.iconSet.editor.formatting,
                     list: 'no-icons',
-                    options: [
-                      'p',
-                      'h1',
-                      'h2',
-                      'h3',
-                      'h4',
-                      'h5',
-                      'h6',
-                      'code'
-                    ]
+                    options: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code']
                   },
                   {
                     label: $q.lang.editor.fontSize,
@@ -204,7 +226,9 @@
                 ['quote', 'unordered', 'ordered', 'outdent', 'indent'],
 
                 ['undo', 'redo'],
-                ['viewsource']
+                ['viewsource'],
+
+                ['embed']
               ]"
               :fonts="{
                 arial: 'Arial',
@@ -219,12 +243,7 @@
             />
             <div class="row">
               <q-space />
-              <q-btn
-                class="q-mr-sm"
-                label="Cancel"
-                flat
-                v-close-popup
-              />
+              <q-btn class="q-mr-sm" label="Cancel" flat v-close-popup />
               <q-btn
                 type="submit"
                 label="Save"
@@ -236,7 +255,11 @@
           </q-form>
           <div class="text-h6 text-grey-7">Preview</div>
         </q-card-section>
-        <q-card-section class="q-mx-auto" style="max-width: 1000px" v-html="topic_form.body" />
+        <q-card-section
+          class="q-mx-auto"
+          style="max-width: 1000px"
+          v-html="topic_form.body"
+        />
       </q-card>
     </q-dialog>
     <!-- Log in dialog -->
@@ -277,33 +300,41 @@ export default {
     ...mapState("auth", ["currentUser"])
   },
   methods: {
-    ...mapActions("topics", ["addNewComment", "removeComment", "removeTopic", "updateTopic"]),
-    saveTopic(){
-      this.updateTopic(this.topic_form)
+    ...mapActions("topics", [
+      "addNewComment",
+      "removeComment",
+      "removeTopic",
+      "updateTopic",
+      "clearTopicDetails"
+    ]),
+    saveTopic() {
+      this.updateTopic(this.topic_form);
     },
-    openEditDialog(){
-      this.topic_form.fill(this.topic_details)
+    openEditDialog() {
+      this.topic_form.fill(this.topic_details);
       this.edit_dialog = true;
     },
-    deleteTopic(id){
-        this.$q.dialog({
-        dark: true,
-        title: 'Confirm',
-        message: 'Are you sure you want to delete the topic?',
-        cancel: true,
-        persistent: true
-      }).onOk(() => {
-        this.removeTopic(id).then(() => {
-          this.$router.go(-1);
+    deleteTopic(id) {
+      this.$q
+        .dialog({
+          dark: true,
+          title: "Confirm",
+          message: "Are you sure you want to delete the topic?",
+          cancel: true,
+          persistent: true
         })
-      })
+        .onOk(() => {
+          this.removeTopic(id).then(() => {
+            this.$router.go(-1);
+          });
+        });
     },
     deleteComment(id) {
       this.removeComment({ topic_id: this.$route.params.id, id: id });
     },
     formatDate(timestamp) {
       let date = new Date(timestamp.seconds * 1000);
-      return quasarDate.formatDate(date, "ddd MMMM D, YYYY | h:mm a");
+      return quasarDate.formatDate(date, "ddd MMM D, YYYY | h:mma");
     },
     saveComment() {
       this.addNewComment(this.comment_form).then(() => {
@@ -319,6 +350,25 @@ export default {
     openLoginDialog() {
       this.login_dialog = true;
     }
+  },
+
+  beforeDestroy() {
+    this.clearTopicDetails();
+  },
+
+  beforeMount() {
+    if(this.$q.mobile) {
+      console.log(this.$q.mobile)
+    }
   }
 };
 </script>
+
+<style lang="scss" scoped>
+iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 300px !important;
+}
+</style>

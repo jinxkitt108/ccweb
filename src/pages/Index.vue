@@ -1,275 +1,131 @@
-<style lang="scss" scoped>
-.hero-panel {
-  background: rgb(29, 7, 35);
-  background: linear-gradient(
-    176deg,
-    rgba(28, 7, 35, 1) 27%,
-    rgba(60, 1, 80, 1) 57%,
-    rgba(55, 6, 85, 1) 100%
-  );
-}
-.hero-title {
-  font-size: 80px;
-  font-weight: 900;
-  margin: 0px !important;
-  padding: 0px !important;
-}
-.hero-subtitle {
-  font-size: 50px;
-  font-weight: bold;
-  margin: 0px !important;
-  padding: 0px !important;
-}
-.hero-greetings {
-  font-size: 30px;
-  font-style: normal;
-  font-variant: normal;
-  font-weight: 700;
-  line-height: 26.4px;
-  margin: 0px !important;
-  padding: 0px !important;
-}
-.bg-index {
-  background-color: rgba(55, 6, 85, 1);
-}
-</style>
 <template>
-  <q-page class="text-white bg-index">
-    <!-- Header Section -->
-    <div class="row q-pa-lg hero-panel">
-      <div class="col-12 col-md-6 self-center text-center">
-        <div class="hero-greetings">Hi, I'm Clint.</div>
-        <q-list>
-          <q-item>
-            <q-item-section>
-              <q-item-label class="hero-title">
-                <span class="text-indigo-10">W</span>
-                <span class="text-orange-10">E</span>
-                <span class="text-lime-10">B</span>
-              </q-item-label>
-              <q-item-label class="hero-subtitle text-white" caption
-                >DEVELOPER</q-item-label
-              >
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </div>
-      <div class="col-12 col-md-6 self-center q-pa-md">
-        <q-img
-          style="max-width: 400px"
-          src="~assets/app_images/developer.png"
+  <q-page class="bg_head">
+    <div class="row q-pa-lg home-banner" style="background-image: url(app_images/Page-Turner.svg); background-size: cover; background-repeat: no-repeat; height: 500px">
+      <div class="col-sm-12 col-md-6 column items-center q-pa-lg">
+        <div>
+          <q-img
+            class="wobble-hor-bottom"
+            width="160px"
+            src="app_icons/logo.png"
+          />
+        </div>
+        <div class="text-h5 q-mt-md text-white text-center" style="max-width: 400px">
+          Shaping your digital world, businesses and lifestyle in an innovative
+          way.
+        </div>
+        <q-btn
+          to="/about-developer"
+          label="The Developer"
+          class="q-mt-lg"
+          size="md"
+          no-caps
+          rounded
+          icon-right="arrow_forward"
+          color="indigo"
         />
       </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-4">
-        <q-img src="~assets/app_images/about_me.png" />
-      </div>
-      <div class="col-md-4 self-center">
-        <q-card class="my-card bg-transparent" flat>
-          <q-card-section>
-            <div class="text-h5">About Me</div>
-            <p class="text-subtitle1">
-              I am a graduate of Bachelor of Science in Information Technology.
-              I am a web and software developer, graphic artist, and a
-              technology enthusiast. Currently a freelancer who develops
-              different applications and computer systems.
-            </p>
-          </q-card-section>
-        </q-card>
-      </div>
-      <div class="col-md-4 self-center">
-        <q-card class="my-card bg-transparent q-px-xl" flat>
-          <q-card-section>
-            <div class="text-h6 q-mb-md">Email me at</div>
-            <q-input
-              @click="copyContent(my_email)"
-              v-model="my_email"
-              id="my_email"
-              style="max-width: 300px"
-              dark
-              dense
-              outlined
-              readonly
-            >
-              <template v-slot:append>
-                <q-icon name="content_copy" @click="copyContent(my_email)" />
-                <q-tooltip>
-                  Copy
-                </q-tooltip>
-              </template>
-            </q-input>
-          </q-card-section>
-        </q-card>
+      <div class="col-sm-12 col-md-6 q-mt-xl self-center">
+        <q-img style="min-width: 300px" src="app_images/undraw_mobile_prototyping_grmd.svg" />
       </div>
     </div>
 
-    <!-- Project Section -->
+    <div class="row q-pa-lg bg-grey-1 justify-center" style="margin-top: 150px">
+      <q-img
+        src="app_images/undraw_programming_2svr.svg"
+        style="max-width: 500px; min-width: 300px"
+      />
+    </div>
 
-    <div class="text-bold text-h4 text-center q-mt-xl">PROJECTS</div>
-    <div class="row justify-center q-px-md bg-deep-grey-11">
+    <div class="text-h4 text-center" style="margin-top: 100px">
+      You may want
+    </div>
+
+    <!-- Contents List -->
+    <div class="row q-gutter-xl q-pa-lg justify-center">
       <q-card
-        v-for="project in projects"
-        :key="project.id"
-        class="my-card column items-center col-sm-12 col-md-3 bg-transparent"
-        dark
-        flat
+        v-for="(content, index) in contents"
+        :key="index"
+        class="my-card col-sm-12 col-md-3"
+        style="width: 250px"
       >
         <q-card-section>
-          <div class="text-subtitle1">
-            <q-icon name="shop" size="lg" color="deep-purple-2" />
-            {{ project.name }}
+          <div class="text-body1 text-center">
+            <q-img :src="content.icon" width="80px" class="q-mr-sm" />
+            <q-item>
+              <q-item-section>
+                <q-item-label class="text-bold q-mb-sm">{{
+                  content.name
+                }}</q-item-label>
+                <q-item-label
+                  v-for="(item, i) in content.category"
+                  :key="i"
+                  class="text-subtitle1"
+                  >{{ item }}</q-item-label
+                >
+              </q-item-section>
+            </q-item>
           </div>
-          <div class="text-caption">
-            Date Started:
-            <span class="q-ml-sm">{{ project.date_started }}</span>
-          </div>
-          <div class="text-caption q-mb-sm">
-            Status:
-            <q-chip icon="construction" color="blue" text-color="white" dense>{{
-              project.status
-            }}</q-chip>
-          </div>
-          <q-btn @click="openLink(project.url)" text-color="white" flat no-caps
-            >View Website</q-btn
-          >
         </q-card-section>
       </q-card>
     </div>
-    <div class="text-center">
-      <q-img
-        src="~assets/app_images/svg/shared_goals.svg"
-        style="max-width: 300px"
-      />
-    </div>
 
-    <!-- What do I Do? -->
-    <div class="what-i-do q-pa-lg" style="margin-top: 150px">
-      <div class="q-my-md text-h5 text-center">What I do?</div>
-      <div class="row justify-center q-px-sm q-gutter-xl">
-        <q-card class="my-card col-sm-12 col-md-3 bg-dark" bordered>
-          <q-intersection once transition="scale">
-            <q-card-section class="text-center">
-              <q-avatar
-                size="80px"
-                icon="science"
-                color="white"
-                text-color="green"
-                class="shadow-3  q-mb-md"
-              />
-              <div class="text-h6">
-                UX/UI Design
-              </div>
-            </q-card-section>
-            <q-card-section class="q-pt-none">
-              <p>
-                I am working on cross-platform applications using different
-                Javascript frameworks. Using a single code-base I can design an
-                application for mobile and desktop devices in any platform IOS,
-                Android, Windows or Mac that provides a smooth user experience
-                and friendly interface.
-              </p>
-            </q-card-section>
-          </q-intersection>
-        </q-card>
-
-        <q-card class="my-card col-sm-12 col-md-3 bg-dark" bordered>
-          <q-intersection once transition="scale">
-            <q-card-section class="text-center">
-              <q-avatar
-                size="80px"
-                icon="developer_mode"
-                color="white"
-                text-color="blue"
-                class="shadow-3  q-mb-md"
-              />
-              <div class="text-h6">
-                Backend Developer
-              </div>
-            </q-card-section>
-            <q-card-section class="q-pt-none">
-              <p>
-                As a full-stack developer, I know how to handle API's using
-                backend languages. Specifically PHP and Javascript API's.
-                Providing an effective structure of an application and a speed
-                up performance.
-              </p>
-            </q-card-section>
-          </q-intersection>
-        </q-card>
-
-        <q-card class="my-card col-sm-12 col-md-3 bg-dark" bordered>
-          <q-intersection once transition="scale">
-            <q-card-section class="text-center">
-              <q-avatar
-                size="80px"
-                icon="storage"
-                color="white"
-                text-color="red"
-                class="shadow-3  q-mb-md"
-              />
-              <div class="text-h6">
-                Database Management
-              </div>
-            </q-card-section>
-            <q-card-section class="q-pt-none">
-              <p>
-                Experience in structured query language for relational database
-                like MariaDb. I have also used NoSQL database like Firebase in
-                some of my Quasar application. I can also manage SQLite
-                databases in applications with database added locally.
-              </p>
-            </q-card-section>
-          </q-intersection>
+    <div class="row q-pa-lg" style="margin-top: 100px">
+      <div class="col-sm-12 col-md-6 text-center">
+        <q-img width="300px" src="app_images/undraw_personal_text_vkd8.svg" />
+      </div>
+      <div class="col-sm-12 col-md-4 q-mt-lg">
+        <div class="text-h5 q-mb-sm">Want to know more?</div>
+        <q-card class="my-card q-pa-sm">
+          <q-card-section>
+            <div class="text-subtitle1">
+              Make a living with an Internet home business. Know more about affordable Internet business ideas you can use to start working online.
+            </div>
+          </q-card-section>
         </q-card>
       </div>
     </div>
 
-    <div class="row justify-center">
-      <q-img
-        src="~assets/app_images/svg/product_iteration.svg"
-        style="max-width: 300px"
-      />
-    </div>
-
-    <!-- Contacts Section -->
     <div
-      class="contacts-section q-pa-sm text-center bg-dark"
-      style="margin-top: 50px"
+      class="q-pa-md bg-grey-9 text-white message-area"
+      style="margin-top: 120px; margin-bottom: 100px"
     >
-      <div class="q-pa-md q-gutter-lg">
-        <q-img
-          @click="openLink(site.url)"
-          v-for="site in social"
-          :key="site.url"
-          :src="'/social_media_icons/svg/' + site.icon"
-          width="50px"
-        />
-      </div>
+      <div class="text-h6 text-center q-pa-md">Send a Message</div>
+      <q-form @submit="sendMessage" class="q-mx-auto" style="max-width: 600px">
+        <div class="column q-gutter-md">
+          <div class="col">
+            <q-input
+              v-model="message_form.name"
+              dark
+              class="full-width"
+              label="Name"
+              outlined
+            />
+          </div>
+          <div class="col">
+            <q-input v-model="message_form.email" dark label="Email" outlined />
+          </div>
+          <div class="col">
+            <q-input
+              v-model="message_form.body"
+              dark
+              type="textarea"
+              outlined
+              placeholder="Write Message.."
+            />
+          </div>
+        </div>
+        <div class="q-py-md">
+          <q-btn
+            type="submit"
+            label="Submit"
+            color="indigo"
+            class="full-width"
+          />
+        </div>
+      </q-form>
     </div>
 
-    <!-- Bottom Links -->
     <div class="row bg-grey-10 text-white q-px-xl q-py-md">
-      <div class="col-sm-4">
-        <h1 class="text-subtitle2">SITES</h1>
-        <q-list dense style="max-width: 150px">
-          <q-item
-            @click="openLink(site.url)"
-            clickable
-            v-ripple
-            v-for="(site, index) in sites"
-            :key="index"
-          >
-            <q-item-section>
-              <q-item-label class="text-capitalize">{{
-                site.name
-              }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </div>
-
       <div class="col-sm-4">
         <h1 class="text-subtitle2">PROGRAMMING</h1>
         <div class="row q-gutter-xl">
@@ -290,8 +146,8 @@
         </div>
       </div>
 
-      <div class="col-sm-4">
-        <h1 class="text-subtitle2">DEVELOPER</h1>
+      <div class="col-sm-12 col-md-4">
+        <h1 class="text-subtitle2">CONTENT</h1>
         <div class="text-caption">
           Icons made by
           <a
@@ -319,75 +175,176 @@
         </div>
       </div>
     </div>
+    <div class="bg-grey-10 text-white q-px-xl q-pt-md">
+      <div class="text-caption">This website contains any form of ads.</div>
+      <div>©Copyright ccwebgroup</div>
+    </div>
   </q-page>
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
-      my_email: "clint.stupra@gmail.com",
-      sites: [
-        { url: "https://github.com/jinxkitt108", name: "github" },
+      message_form: new Form({
+        name: "",
+        email: "",
+        body: ""
+      }),
+      contents: [
         {
-          url: "https://stackoverflow.com/users/11942003/macobex108",
-          name: "stack overflow"
-        },
-        { url: "https://laracasts.com/@jinxkitt", name: "laracast" },
-        {
-          url: "https://forum.quasar-framework.org/user/jinxkitt108",
-          name: "quasar forum"
-        }
-      ],
-
-      social: [
-        {
-          url: "https://www.facebook.com/clint.clarido.5/",
-          name: "facebook",
-          icon: "facebook.svg"
+          name: "BLOGS",
+          category: ["Education", "Bussiness", "Technology", "Lifestyle"],
+          icon: "app_icons/svg/009-light-bulb.svg"
         },
         {
-          url: "https://twitter.com/kuyzclint",
-          name: "twitter",
-          icon: "twitter.svg"
+          name: "COURSES",
+          category: ["Programming", "Multimedia", "Networking"],
+          icon: "app_icons/svg/005-screen.svg"
         },
         {
-          url: "https://www.instagram.com/kuyzclint/?hl=en",
-          name: "instagram",
-          icon: "instagram.svg"
-        },
-        {
-          url: "https://www.linkedin.com/in/clint-clarido-891b36103/",
-          name: "linkedIn",
-          icon: "linkedin.svg"
+          name: "JOBS",
+          category: ["Freelancing", "Marketing", "Graphic Arts"],
+          icon: "app_icons/svg/007-browser-3.svg"
         }
       ]
     };
   },
 
-  computed: {
-    ...mapState("projects", ["projects"])
-  },
-
   methods: {
-    copyContent(content) {
-      copyToClipboard(content)
-        .then(() => {
-          this.$q.notify({
-            message: "Copied!",
-            position: "right",
-            icon: "thumb_up"
-          });
-        })
-        .catch(() => {
-          // fail
-        });
-    },
+    ...mapActions("messages", ["addNewMessage"]),
 
-    openLink(url) {
-      openURL(url);
+    sendMessage() {
+      this.addNewMessage(this.message_form);
+      this.message_form.reset();
     }
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.home-banner {
+    padding-bottom: 2rem;
+    // background-image: linear-gradient(131deg,#8a047f 1%,#4a044d 67%);
+}
+
+ul {
+  list-style: none;
+}
+
+.roll-in-top {
+  -webkit-animation: roll-in-top 0.6s ease-out both;
+  animation: roll-in-top 0.6s ease-out both;
+}
+@-webkit-keyframes roll-in-top {
+  0% {
+    -webkit-transform: translateY(-800px) rotate(-540deg);
+    transform: translateY(-800px) rotate(-540deg);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateY(0) rotate(0deg);
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes roll-in-top {
+  0% {
+    -webkit-transform: translateY(-800px) rotate(-540deg);
+    transform: translateY(-800px) rotate(-540deg);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateY(0) rotate(0deg);
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.wobble-hor-bottom {
+  -webkit-animation: wobble-hor-bottom 2s infinite both;
+  animation: wobble-hor-bottom 2s infinite both;
+}
+/* ----------------------------------------------
+ * Generated by Animista on 2020-9-11 23:21:21
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info.
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation wobble-hor-bottom
+ * ----------------------------------------
+ */
+@-webkit-keyframes wobble-hor-bottom {
+  0%,
+  100% {
+    -webkit-transform: translateX(0%);
+    transform: translateX(0%);
+    -webkit-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+  }
+  15% {
+    -webkit-transform: translateX(-30px) rotate(-6deg);
+    transform: translateX(-30px) rotate(-6deg);
+  }
+  30% {
+    -webkit-transform: translateX(15px) rotate(6deg);
+    transform: translateX(15px) rotate(6deg);
+  }
+  45% {
+    -webkit-transform: translateX(-15px) rotate(-3.6deg);
+    transform: translateX(-15px) rotate(-3.6deg);
+  }
+  60% {
+    -webkit-transform: translateX(9px) rotate(2.4deg);
+    transform: translateX(9px) rotate(2.4deg);
+  }
+  75% {
+    -webkit-transform: translateX(-6px) rotate(-1.2deg);
+    transform: translateX(-6px) rotate(-1.2deg);
+  }
+}
+@keyframes wobble-hor-bottom {
+  0%,
+  100% {
+    -webkit-transform: translateX(0%);
+    transform: translateX(0%);
+    -webkit-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+  }
+  15% {
+    -webkit-transform: translateX(-30px) rotate(-6deg);
+    transform: translateX(-30px) rotate(-6deg);
+  }
+  30% {
+    -webkit-transform: translateX(15px) rotate(6deg);
+    transform: translateX(15px) rotate(6deg);
+  }
+  45% {
+    -webkit-transform: translateX(-15px) rotate(-3.6deg);
+    transform: translateX(-15px) rotate(-3.6deg);
+  }
+  60% {
+    -webkit-transform: translateX(9px) rotate(2.4deg);
+    transform: translateX(9px) rotate(2.4deg);
+  }
+  75% {
+    -webkit-transform: translateX(-6px) rotate(-1.2deg);
+    transform: translateX(-6px) rotate(-1.2deg);
+  }
+}
+
+// .bg_head {
+//   background: rgb(255, 255, 255);
+//   background: linear-gradient(
+//     95deg,
+//     rgba(255, 255, 255, 1) 0%,
+//     rgba(255, 255, 255, 0.6026785714285714) 23%,
+//     rgba(147, 62, 212, 0.308) 100%
+//   );
+// }
+</style>

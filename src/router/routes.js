@@ -6,6 +6,7 @@ const routes = [
     children: [
       { path: '/', component: () => import('pages/Index.vue') },
       { path: '/privacy-policy', component: () => import('pages/Policy.vue') },
+      { path: '/about-developer', component: () => import('pages/admin/About.vue') },
       // Users visited page
       { path: 'account-settings', component: () => import('pages/user/AccountSettings.vue') },
       { path: 'portfolio', component: () => import('pages/user/Portfolio.vue') },
